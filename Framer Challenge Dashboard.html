@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>La Jolla Marketing — Framer Challenge Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, system-ui, sans-serif; background: #f7f7f5; color: #111; padding: 28px 32px 56px; line-height: 1.45; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e0; margin-bottom: 28px; }
+  .title-block h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .title-block .sub { color: #666; font-size: 14px; margin-top: 4px; }
+  .title-block .palm { font-size: 22px; margin-right: 6px; }
+  .status-pill { background: #111; color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+  .stat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 28px; }
+  .stat { background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; padding: 16px 18px; }
+  .stat .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; font-weight: 600; }
+  .stat .value { font-size: 22px; font-weight: 700; margin-top: 6px; letter-spacing: -0.01em; }
+  .stat .meta { font-size: 12px; color: #666; margin-top: 2px; }
+  .stat.good .value { color: #0a7d3a; }
+  .stat.warn .value { color: #a65b00; }
+  .progress-card { background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; padding: 20px 22px; margin-bottom: 28px; }
+  .progress-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .progress-head .left { font-size: 13px; font-weight: 600; color: #333; }
+  .progress-head .right { font-size: 13px; color: #666; }
+  .progress-track { height: 10px; background: #ededea; border-radius: 999px; overflow: hidden; position: relative; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #0a7d3a, #2aa65b); border-radius: 999px; transition: width 0.6s ease; }
+  .progress-marker { position: absolute; top: -4px; width: 2px; height: 18px; background: #111; opacity: 0.35; }
+  .progress-legend { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 8px; }
+  section { margin-bottom: 28px; }
+  .section-title { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: #333; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-title .dot { width: 6px; height: 6px; background: #111; border-radius: 50%; }
+  .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .chart-card { background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; padding: 18px 20px; }
+  .chart-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 14px; color: #333; }
+  .chart-wrap { height: 280px; position: relative; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; overflow: hidden; font-size: 13px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid #f0f0ec; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #777; font-weight: 600; background: #fafaf7; }
+  tr.current-week td { background: #fff8e5; font-weight: 600; }
+  tr.future td { color: #aaa; }
+  tr:last-child td { border-bottom: none; }
+  td.notes-cell { vertical-align: top; min-width: 280px; max-width: 420px; }
+  .note-head { font-weight: 600; color: #333; margin-bottom: 6px; }
+  tr.current-week .note-head { color: #7a5900; }
+  .item-list { list-style: none; padding: 0; margin: 0; }
+  .item-list li { display: grid; grid-template-columns: 72px 1fr; gap: 8px; padding: 4px 0; border-top: 1px dashed #e9e9e4; font-weight: 400; }
+  .item-list li:first-child { border-top: none; padding-top: 2px; }
+  .item-amt { font-variant-numeric: tabular-nums; font-weight: 600; color: #0a7d3a; font-size: 12px; }
+  tr.current-week .item-amt { color: #a65b00; }
+  .item-desc { font-size: 12px; color: #555; line-height: 1.4; }
+  tr.current-week .item-desc { color: #5a4400; font-weight: 500; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pos { color: #0a7d3a; font-weight: 600; }
+  .neg { color: #9b1c1c; font-weight: 600; }
+  .zero { color: #aaa; }
+  .channel-card { background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; padding: 18px 20px; }
+  .channel-row { display: grid; grid-template-columns: 260px 1fr 100px 70px; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0ec; }
+  .channel-row:last-child { border-bottom: none; }
+  .channel-name { font-size: 13px; font-weight: 600; }
+  .channel-tag { display: inline-block; background: #f0f0ec; color: #555; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-left: 6px; }
+  .channel-tag.new { background: #fff0b3; color: #7a5900; }
+  .bar-bg { height: 8px; background: #ededea; border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; }
+  .channel-amount { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+  .channel-pct { font-size: 11px; color: #888; text-align: right; }
+  .milestones { background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; padding: 20px 22px; }
+  .milestone { display: grid; grid-template-columns: 90px 24px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f0ec; }
+  .milestone:last-child { border-bottom: none; }
+  .milestone .when { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px; }
+  .milestone .icon { width: 24px; height: 24px; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .milestone.win .icon { background: #0a7d3a; }
+  .milestone.launch .icon { background: #b8860b; }
+  .milestone .title { font-size: 14px; font-weight: 600; }
+  .milestone .desc { font-size: 12px; color: #666; margin-top: 2px; }
+  .pace-card { background: linear-gradient(135deg, #111 0%, #2a2a2a 100%); color: #f7f7f5; border-radius: 14px; padding: 20px 22px; margin-bottom: 28px; }
+  .pace-head { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; font-weight: 600; margin-bottom: 10px; }
+  .pace-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .pace-item .v { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .pace-item .l { font-size: 12px; color: #bbb; margin-top: 4px; }
+  footer { margin-top: 32px; text-align: center; font-size: 11px; color: #999; }
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .channel-row { grid-template-columns: 170px 1fr 90px; }
+    .channel-pct { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-block">
+      <h1><span class="palm">🌴</span>La Jolla Marketing</h1>
+      <div class="sub">Framer Challenge · $25,000 goal · April 6 to July 5, 2026</div>
+    </div>
+    <div class="status-pill" id="statusPill">WEEK 3 · IN PROGRESS</div>
+  </header>
+
+  <div class="stat-grid">
+    <div class="stat good">
+      <div class="label">Earned so far</div>
+      <div class="value" id="totalEarned">$322.69</div>
+      <div class="meta" id="totalMeta">across 3 weeks</div>
+    </div>
+    <div class="stat">
+      <div class="label">Goal</div>
+      <div class="value">$25,000</div>
+      <div class="meta">by July 5</div>
+    </div>
+    <div class="stat">
+      <div class="label">% Complete</div>
+      <div class="value" id="pctComplete">1.29%</div>
+      <div class="meta">of $25K</div>
+    </div>
+    <div class="stat">
+      <div class="label">Remaining</div>
+      <div class="value" id="remaining">$24,677.31</div>
+      <div class="meta">to reach goal</div>
+    </div>
+    <div class="stat">
+      <div class="label">Weeks left</div>
+      <div class="value" id="weeksLeft">10</div>
+      <div class="meta">of 13 total</div>
+    </div>
+    <div class="stat warn">
+      <div class="label">Needed / week</div>
+      <div class="value" id="needed">$2,468</div>
+      <div class="meta">to catch pace</div>
+    </div>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-head">
+      <div class="left">Progress to $25,000</div>
+      <div class="right"><span id="progressAmount">$322.69</span> / $25,000</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-marker" id="paceMarker" title="Ideal pace marker"></div>
+    </div>
+    <div class="progress-legend">
+      <span>$0</span>
+      <span>ideal pace ↑</span>
+      <span>$25,000</span>
+    </div>
+  </div>
+
+  <div class="pace-card">
+    <div class="pace-head">Pace check</div>
+    <div class="pace-body">
+      <div class="pace-item"><div class="v" id="idealNow">$5,769</div><div class="l">Where ideal linear pace puts you by end of Week 3</div></div>
+      <div class="pace-item"><div class="v" id="gap">-$5,447</div><div class="l">Gap vs ideal pace right now</div></div>
+      <div class="pace-item"><div class="v" id="trajectory">$1,397</div><div class="l">Projected total at current run rate (13 weeks)</div></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-title"><span class="dot"></span>Trajectory</div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Cumulative earnings vs. ideal pace</h3>
+        <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Weekly income</h3>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span>Weekly breakdown</div>
+    <table id="weekTable">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Dates</th>
+          <th class="num">Earned</th>
+          <th class="num">Δ $ WoW</th>
+          <th class="num">Δ % WoW</th>
+          <th class="num">Cumulative</th>
+          <th class="num">% of goal</th>
+          <th class="num">Remaining</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="weekTableBody"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span>Income by channel</div>
+    <div class="channel-card" id="channelCard"></div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot"></span>Milestones</div>
+    <div class="milestones" id="milestonesCard"></div>
+  </section>
+
+  <footer>Living dashboard · last updated April 22, 2026 · tell Claude what to add and it'll refresh</footer>
+</div>
+
+<script>
+const GOAL = 25000;
+const TOTAL_WEEKS = 13;
+const CURRENT_WEEK_INDEX = 2;
+
+const weeks = [
+  { n: 1,  dates: "Apr 6 to 13",     earned: 0.00,   status: "done",    notes: "Built LeaseStatus component",
+    items: [] },
+  { n: 2,  dates: "Apr 13 to 20",    earned: 7.50,   status: "done",    notes: "Hosting commissions",
+    items: [
+      { amount: 7.50, desc: "Existing client transfer, monthly hosting commission" }
+    ] },
+  { n: 3,  dates: "Apr 20 to 27",    earned: 315.19, status: "current", notes: "LeaseStatus listed in Framer Marketplace",
+    items: [
+      { amount: 45.22,  desc: "Apr 21 · Framer commission, lowest-tier hosting package (annual)" },
+      { amount: 135.00, desc: "Apr 22 · Mid-tier hosting package (annual) at client launch. Client used coupon code (saved ~$90), so commission was reduced. Middle tier needed to support 301 redirects from existing site." },
+      { amount: 119.97, desc: "Apr 22 · Locale add-on commission ($20/mo locale, paid annually). Client added Spanish version post-launch." },
+      { amount: 15.00,  desc: "First paid component sale, LeaseStatus" }
+    ] },
+  { n: 4,  dates: "Apr 27 to May 4", earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 5,  dates: "May 4 to 11",     earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 6,  dates: "May 11 to 18",    earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 7,  dates: "May 18 to 25",    earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 8,  dates: "May 25 to Jun 1", earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 9,  dates: "Jun 1 to 8",      earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 10, dates: "Jun 8 to 15",     earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 11, dates: "Jun 15 to 22",    earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 12, dates: "Jun 22 to 29",    earned: 0,      status: "future",  notes: "", items: [] },
+  { n: 13, dates: "Jun 29 to Jul 5", earned: 0,      status: "future",  notes: "", items: [] }
+];
+
+const channels = [
+  { id: "framer-hosting",  name: "Framer client hosting commissions", color: "#2aa65b", isNew: false, weekly: { 1: 0, 2: 7.50, 3: 300.19 } },
+  { id: "component-sales", name: "Paid component sales (LeaseStatus)", color: "#b8860b", isNew: true,  weekly: { 1: 0, 2: 0,    3: 15.00 } }
+];
+
+const milestones = [
+  { when: "Week 1", kind: "launch", title: "Built LeaseStatus component", desc: "" },
+  { when: "Week 3", kind: "launch", title: "LeaseStatus listed in Framer Marketplace", desc: "" },
+  { when: "Week 3", kind: "win",    title: "First paid component sale: $15", desc: "" },
+  { when: "Week 3", kind: "win",    title: "Lowest-tier hosting commission: $45.22", desc: "Apr 21 · Framer commission on client's lowest-tier annual hosting plan" },
+  { when: "Week 3", kind: "win",    title: "Client launch: $135 mid-tier hosting commission", desc: "Apr 22 · Middle tier required to support 301 redirects from existing site. Client used coupon code (saved ~$90), reducing commission." },
+  { when: "Week 3", kind: "win",    title: "Post-launch locale add-on: $119.97 commission", desc: "Apr 22 · Client added Spanish version; $20/mo locale paid annually" }
+];
+
+const cumulative = [];
+let running = 0;
+weeks.forEach(w => { running += w.earned; cumulative.push(running); });
+const totalEarned = running;
+const idealPace = weeks.map((_, i) => GOAL * ((i + 1) / TOTAL_WEEKS));
+const weeksElapsed = CURRENT_WEEK_INDEX + 1;
+const weeksLeft = TOTAL_WEEKS - weeksElapsed;
+const idealNow = GOAL * (weeksElapsed / TOTAL_WEEKS);
+const gap = totalEarned - idealNow;
+const remaining = GOAL - totalEarned;
+const neededPerWeek = weeksLeft > 0 ? remaining / weeksLeft : 0;
+const runRatePerWeek = weeksElapsed > 0 ? totalEarned / weeksElapsed : 0;
+const trajectory = runRatePerWeek * TOTAL_WEEKS;
+const pct = (totalEarned / GOAL) * 100;
+
+const fmt = (n, d = 2) => "$" + n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmt0 = (n) => "$" + Math.round(n).toLocaleString();
+
+document.getElementById("totalEarned").textContent = fmt(totalEarned);
+document.getElementById("totalMeta").textContent   = `across ${weeksElapsed} week${weeksElapsed === 1 ? "" : "s"}`;
+document.getElementById("pctComplete").textContent = pct.toFixed(2) + "%";
+document.getElementById("remaining").textContent   = fmt(remaining);
+document.getElementById("weeksLeft").textContent   = weeksLeft;
+document.getElementById("needed").textContent      = fmt0(neededPerWeek);
+document.getElementById("progressAmount").textContent = fmt(totalEarned);
+document.getElementById("progressFill").style.width   = Math.max(pct, 0.3) + "%";
+document.getElementById("paceMarker").style.left      = ((weeksElapsed / TOTAL_WEEKS) * 100) + "%";
+document.getElementById("idealNow").textContent   = fmt0(idealNow);
+document.getElementById("gap").textContent        = (gap >= 0 ? "+" : "") + fmt0(gap);
+document.getElementById("trajectory").textContent = fmt0(trajectory);
+document.getElementById("statusPill").textContent = `WEEK ${weeksElapsed} · IN PROGRESS`;
+
+const tbody = document.getElementById("weekTableBody");
+weeks.forEach((w, i) => {
+  const cum = cumulative[i];
+  const prev = i > 0 ? weeks[i - 1].earned : 0;
+  const delta = w.earned - prev;
+  const pctGoal = (cum / GOAL) * 100;
+  const remLeft = GOAL - cum;
+  const isFuture = w.status === "future";
+  const isFirst = i === 0;
+
+  const dollarClass = delta > 0 ? "pos" : (delta < 0 ? "neg" : "zero");
+  const dollarText = (isFuture || isFirst) ? "—" : (delta > 0 ? "+" : "") + fmt(delta);
+
+  let pctText = "—";
+  let pctClass = "zero";
+  if (!isFuture && !isFirst) {
+    if (prev === 0 && w.earned > 0) {
+      pctText = "∞";
+      pctClass = "pos";
+    } else if (prev > 0) {
+      const wowPct = ((w.earned - prev) / prev) * 100;
+      pctText = (wowPct > 0 ? "+" : "") + wowPct.toFixed(1) + "%";
+      pctClass = wowPct > 0 ? "pos" : (wowPct < 0 ? "neg" : "zero");
+    }
+  }
+
+  const earnedText = w.earned > 0 ? fmt(w.earned) : (isFuture ? '<span class="zero">—</span>' : fmt(0));
+  const cumText    = isFuture ? '<span class="zero">—</span>' : fmt(cum);
+  const pctGoalTxt = isFuture ? '<span class="zero">—</span>' : pctGoal.toFixed(2) + "%";
+  const remText    = isFuture ? '<span class="zero">—</span>' : fmt(remLeft);
+
+  const items = (w.items || []);
+  const itemsHtml = items.length
+    ? `<ul class="item-list">` + items.map(it =>
+        `<li><span class="item-amt">${fmt(it.amount)}</span><span class="item-desc">${it.desc}</span></li>`
+      ).join("") + `</ul>`
+    : "";
+  const notesCell = `${w.notes ? `<div class="note-head">${w.notes}</div>` : ""}${itemsHtml}`;
+
+  const tr = document.createElement("tr");
+  if (w.status === "current") tr.classList.add("current-week");
+  if (isFuture) tr.classList.add("future");
+  tr.innerHTML = `
+    <td><strong>Week ${w.n}</strong></td>
+    <td>${w.dates}</td>
+    <td class="num">${earnedText}</td>
+    <td class="num ${dollarClass}">${dollarText}</td>
+    <td class="num ${pctClass}">${pctText}</td>
+    <td class="num">${cumText}</td>
+    <td class="num">${pctGoalTxt}</td>
+    <td class="num">${remText}</td>
+    <td class="notes-cell">${notesCell}</td>`;
+  tbody.appendChild(tr);
+});
+
+const channelCard = document.getElementById("channelCard");
+const channelTotals = channels.map(c => ({ ...c, total: Object.values(c.weekly).reduce((a, b) => a + b, 0) }));
+const channelSum = channelTotals.reduce((a, b) => a + b.total, 0) || 1;
+
+channelTotals.forEach(c => {
+  const pctOfTotal = (c.total / channelSum) * 100;
+  const row = document.createElement("div");
+  row.className = "channel-row";
+  row.innerHTML = `
+    <div class="channel-name">${c.name}${c.isNew ? '<span class="channel-tag new">New</span>' : ''}</div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${Math.max(pctOfTotal, 1)}%;background:${c.color};"></div></div>
+    <div class="channel-amount">${fmt(c.total)}</div>
+    <div class="channel-pct">${pctOfTotal.toFixed(0)}%</div>`;
+  channelCard.appendChild(row);
+});
+
+const breakdownWrap = document.createElement("div");
+breakdownWrap.style.marginTop = "18px";
+breakdownWrap.style.paddingTop = "16px";
+breakdownWrap.style.borderTop = "1px solid #f0f0ec";
+breakdownWrap.innerHTML = `
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#888;font-weight:600;margin-bottom:10px;">Weekly split by channel</div>
+  <table style="border:none;">
+    <thead><tr><th>Channel</th><th class="num">Wk 1</th><th class="num">Wk 2</th><th class="num">Wk 3</th><th class="num">Total</th></tr></thead>
+    <tbody>
+      ${channelTotals.map(c => `
+        <tr>
+          <td style="font-weight:600;"><span style="display:inline-block;width:8px;height:8px;background:${c.color};border-radius:50%;margin-right:8px;"></span>${c.name}</td>
+          <td class="num">${c.weekly[1] ? fmt(c.weekly[1]) : '<span class="zero">—</span>'}</td>
+          <td class="num">${c.weekly[2] ? fmt(c.weekly[2]) : '<span class="zero">—</span>'}</td>
+          <td class="num">${c.weekly[3] ? fmt(c.weekly[3]) : '<span class="zero">—</span>'}</td>
+          <td class="num"><strong>${fmt(c.total)}</strong></td>
+        </tr>`).join("")}
+    </tbody>
+  </table>`;
+channelCard.appendChild(breakdownWrap);
+
+const milestonesCard = document.getElementById("milestonesCard");
+milestones.forEach(m => {
+  const el = document.createElement("div");
+  el.className = "milestone " + (m.kind || "");
+  el.innerHTML = `
+    <div class="when">${m.when}</div>
+    <div class="icon">${m.kind === "launch" ? "🚀" : "★"}</div>
+    <div><div class="title">${m.title}</div>${m.desc ? `<div class="desc">${m.desc}</div>` : ''}</div>`;
+  milestonesCard.appendChild(el);
+});
+
+const labels = weeks.map(w => `Wk ${w.n}`);
+const actualLine = cumulative.map((v, i) => i <= CURRENT_WEEK_INDEX ? v : null);
+
+new Chart(document.getElementById("lineChart"), {
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      { label: "Ideal pace to $25K", data: idealPace, borderColor: "#bbb", borderDash: [6, 4], borderWidth: 2, pointRadius: 0, fill: false, tension: 0 },
+      { label: "Actual cumulative", data: actualLine, borderColor: "#0a7d3a", backgroundColor: "rgba(42, 166, 91, 0.12)", borderWidth: 3, pointRadius: 4, pointBackgroundColor: "#0a7d3a", fill: true, tension: 0.25 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: (v) => "$" + v.toLocaleString(), font: { size: 11 } }, grid: { color: "#f0f0ec" } },
+      x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById("barChart"), {
+  type: "bar",
+  data: {
+    labels,
+    datasets: [{
+      label: "Earned",
+      data: weeks.map(w => w.earned),
+      backgroundColor: weeks.map(w => w.status === "current" ? "#b8860b" : w.status === "future" ? "#ededea" : "#0a7d3a"),
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => fmt(ctx.parsed.y) } } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: (v) => "$" + v, font: { size: 10 } }, grid: { color: "#f0f0ec" } },
+      x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

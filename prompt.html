@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Build Your Own Sales Challenge Dashboard | LJM</title>
+<meta name="description" content="Copy-paste prompt to give Claude in Cowork mode so it builds a live, shareable sales challenge dashboard for your goal, on your timeline, with your branding." />
+<meta property="og:title" content="Build Your Own Sales Challenge Dashboard" />
+<meta property="og:description" content="Copy-paste Claude prompt for a live sales challenge dashboard, by La Jolla Marketing." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="LJM-SMALL.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@LJM_Framer" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, system-ui, sans-serif; background: #f7f7f5; color: #111; padding: 28px 32px 56px; line-height: 1.55; }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e0; margin-bottom: 28px; }
+  .title-block { display: flex; align-items: center; gap: 16px; }
+  .title-block h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+  .title-block .sub { color: #666; font-size: 14px; margin-top: 4px; }
+  .logo-link { display: inline-flex; text-decoration: none; flex-shrink: 0; transition: transform 0.15s ease; }
+  .logo-link:hover { transform: scale(1.05); }
+  .logo-circle { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: #0a0a0a; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .logo-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .twitter-badge { display: inline-flex; align-items: center; gap: 6px; background: #0a0a0a; color: #fff; padding: 4px 10px 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; text-decoration: none; margin-top: 8px; transition: background 0.15s ease; letter-spacing: 0.01em; }
+  .twitter-badge:hover { background: #1d9bf0; }
+  .twitter-badge svg { width: 12px; height: 12px; }
+  .status-pill { background: #111; color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+  .hero { background: #fff; border: 1px solid #e9e9e4; border-radius: 16px; padding: 32px 36px; margin-bottom: 24px; }
+  .hero h2 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; line-height: 1.2; }
+  .hero p { color: #555; font-size: 16px; max-width: 640px; }
+  .card { background: #fff; border: 1px solid #e9e9e4; border-radius: 16px; padding: 28px 32px; margin-bottom: 20px; }
+  .card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .card h3 .num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: #111; color: #fff; border-radius: 50%; font-size: 13px; font-weight: 700; }
+  .card p { color: #444; font-size: 15px; margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card ul, .card ol { margin: 10px 0 0 0; padding-left: 22px; color: #333; font-size: 15px; }
+  .card li { margin-bottom: 8px; line-height: 1.5; }
+  .card li:last-child { margin-bottom: 0; }
+  .card strong { color: #111; font-weight: 600; }
+  .card code { background: #f3f3ee; padding: 1px 6px; border-radius: 4px; font-size: 0.9em; font-family: "SF Mono", Menlo, monospace; color: #b8860b; }
+  .prompt-card { background: #0a0a0a; border: 1px solid #0a0a0a; color: #f7f7f5; border-radius: 16px; padding: 24px 28px 28px; margin-bottom: 20px; position: relative; }
+  .prompt-card h3 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .prompt-card .lead { color: #bbb; font-size: 14px; margin-bottom: 18px; }
+  .prompt-wrap { position: relative; }
+  .copy-btn { position: absolute; top: 14px; right: 14px; background: #fff; color: #0a0a0a; border: none; padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: 0.02em; transition: all 0.15s ease; font-family: inherit; z-index: 2; }
+  .copy-btn:hover { background: #1d9bf0; color: #fff; }
+  .copy-btn.copied { background: #0a7d3a; color: #fff; }
+  .prompt-text { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 22px 24px 22px 24px; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 13px; line-height: 1.6; color: #e8e8e0; white-space: pre-wrap; word-wrap: break-word; max-height: 520px; overflow-y: auto; }
+  .prompt-text::-webkit-scrollbar { width: 8px; }
+  .prompt-text::-webkit-scrollbar-track { background: #0a0a0a; border-radius: 4px; }
+  .prompt-text::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 4px; }
+  .prompt-text strong { color: #ffd580; font-weight: 600; }
+  .checklist { list-style: none; padding: 0; margin: 10px 0 0 0; }
+  .checklist li { padding: 8px 0 8px 28px; position: relative; color: #333; font-size: 15px; border-bottom: 1px solid #f0f0ec; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: "✓"; position: absolute; left: 0; top: 7px; color: #0a7d3a; font-weight: 700; font-size: 16px; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
+  footer { margin-top: 36px; padding-top: 20px; border-top: 1px solid #e5e5e0; text-align: center; font-size: 12px; color: #888; }
+  footer a { color: #444; text-decoration: none; font-weight: 600; }
+  footer a:hover { color: #0a7d3a; }
+  @media (max-width: 700px) {
+    body { padding: 20px 18px 40px; }
+    .hero { padding: 24px; }
+    .hero h2 { font-size: 24px; }
+    .card { padding: 20px 22px; }
+    .prompt-card { padding: 20px 18px; }
+    .prompt-text { padding: 18px 16px; font-size: 12px; }
+    .copy-btn { top: 10px; right: 10px; padding: 6px 12px; font-size: 11px; }
+    header { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-block">
+      <a href="https://x.com/LJM_Framer" target="_blank" rel="noopener" class="logo-link" aria-label="La Jolla Marketing on X">
+        <div class="logo-circle">
+          <img src="LJM-SMALL.png" alt="La Jolla Marketing logo" />
+        </div>
+      </a>
+      <div>
+        <h1>La Jolla Marketing</h1>
+        <div class="sub">Build your own live sales challenge dashboard</div>
+        <a href="https://x.com/LJM_Framer" target="_blank" rel="noopener" class="twitter-badge" aria-label="Follow @LJM_Framer on X">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @LJM_Framer
+        </a>
+      </div>
+    </div>
+    <div class="status-pill">BUILDER PROMPT</div>
+  </header>
+
+  <div class="hero">
+    <h2>Build your own live sales challenge dashboard with Claude</h2>
+    <p>A copy-paste prompt for Cowork mode. Answer a few questions, Claude builds a shareable dashboard in minutes. Works for any timed revenue goal: product launch window, freelance sprint, Framer challenge, whatever you're working toward.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">1</span>What you end up with</h3>
+    <ul>
+      <li>An <code>index.html</code> file in your Cowork project folder you can open in any browser.</li>
+      <li>A weekly breakdown with itemized sales, pace vs goal, two charts, milestones, and income by channel.</li>
+      <li>Your business name, logo, and X handle baked into the header.</li>
+      <li>Optionally pushed to a public GitHub Pages URL you can share anywhere.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Before you start, have ready</h3>
+    <ul class="checklist">
+      <li>Your challenge <strong>start date</strong> (e.g. April 6, 2026).</li>
+      <li><strong>How many days</strong> the challenge runs (e.g. 90 days). Claude calculates the end date for you.</li>
+      <li>Your <strong>goal amount</strong> in dollars.</li>
+      <li>Your <strong>business name</strong> as you want it in the header.</li>
+      <li>A <strong>logo image</strong> (PNG or JPG). Drop it into your Cowork project folder and note the filename (e.g. <code>logo.png</code>).</li>
+      <li>Your <strong>X/Twitter handle</strong> and full URL (e.g. <code>@yourhandle</code> and <code>https://x.com/yourhandle</code>).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>How to use it</h3>
+    <ol>
+      <li>Open a new Cowork conversation in the project folder where you want the dashboard.</li>
+      <li>Drop your logo file into that folder first.</li>
+      <li>Copy the prompt below and paste it as your first message.</li>
+      <li>Claude asks follow-up questions to fill in your details, builds the HTML, opens it locally, then offers to push to GitHub.</li>
+      <li>If you want the public URL, have a GitHub account ready (empty repo is fine). Claude walks you through creating a Personal Access Token if needed.</li>
+    </ol>
+  </div>
+
+  <div class="prompt-card">
+    <h3>The prompt</h3>
+    <div class="lead">Click Copy, then paste into Cowork as your first message.</div>
+    <div class="prompt-wrap">
+      <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+      <div class="prompt-text" id="promptText">I want you to build me a live sales challenge dashboard as a single index.html file in my Cowork project folder. Before writing any code, gather my details, then build the file, then show it to me locally, then offer to deploy it to GitHub Pages.
+
+Step 1: Gather my challenge details. Use AskUserQuestion to collect these one at a time (or grouped where it makes sense):
+- Challenge name (short, e.g. "Framer Challenge" or "Q2 Sprint").
+- Start date (accept free-form like "April 6 2026" or "2026-04-06").
+- Duration in days (accept a number, e.g. 90).
+- After I answer start date and days, compute the end date yourself and state it back to me for confirmation before proceeding.
+- Dollar goal (e.g. $25,000).
+- Business name as it should appear in the header.
+- X/Twitter handle with @ (e.g. @yourhandle).
+- Full X URL (e.g. https://x.com/yourhandle).
+- Logo filename in the folder (e.g. logo.png). Confirm via bash that the file exists before continuing. If it's missing, ask me to drop it in and tell me the exact folder path.
+- Optional: income channels I want to track separately (e.g. "hosting commissions, product sales, coaching"). Default to a single "Revenue" channel if I don't care.
+
+Step 2: Build the dashboard. Create index.html in the project folder root with:
+- A circular logo (use my uploaded file as an img tag) in the upper-left header, wrapped in a link to my X URL, on a dark circle with a subtle hover scale.
+- Business name as the h1 next to the logo, with challenge name, goal, and date range as the subtitle.
+- A prominent black Twitter badge with the X glyph and my @handle, also linking to my X URL, placed right under the subtitle.
+- A status pill on the right of the header showing current week number and status.
+- A 6-card stat grid: earned so far, goal, % complete, remaining, weeks left, needed per week to hit pace.
+- A progress bar showing progress to goal, with an ideal pace marker at the current week position.
+- A dark Pace check card with three stats: where ideal linear pace puts me at end of current week, my gap vs ideal pace, and projected total at current run rate.
+- Two charts using Chart.js from CDN: a line chart of cumulative earnings vs ideal pace, and a bar chart of weekly income (highlight the current week in a different color).
+- A weekly breakdown table: Week #, Dates, Earned, delta $ WoW, delta % WoW, Cumulative, % of goal, Remaining, Notes. The Notes cell should support a short top-line note plus a sub-list of individual sale line items (each line item = amount + description). Split the duration into 7-day weekly buckets.
+- An Income by channel card with a bar per channel plus a weekly split sub-table.
+- A Milestones card with one entry per significant event (launch, first sale, etc.).
+- Footer line showing last-updated date.
+- All meta tags: title, description, Open Graph title/description/image (point og:image at the logo filename), Twitter card tags with my @handle.
+- Responsive styles that stack on screens under 900px.
+
+Use Chart.js 4.5.0 from https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js with the integrity hash sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi. Keep all CSS and JS inline so the file is fully self-contained (except for the logo image reference).
+
+Use a clean, modern design: off-white background (#f7f7f5), white cards with subtle borders (#e9e9e4), 14px rounded corners, SF/Inter system font stack, green (#0a7d3a) for positive/earned, amber (#b8860b or #a65b00) for current/warning, dark pill backgrounds.
+
+Step 3: Show me the file locally. After building, give me a computer:// link to the file so I can open it in my browser. Do not ask me if I want to see it, just give me the link.
+
+Step 4: Offer GitHub deployment. After I have opened it locally, ask (using AskUserQuestion) whether I want to push this to a public GitHub repo so I can share it and let it update live. If yes:
+- Ask me for my GitHub username and the repo name (tell me to create the empty repo on github.com first if I have not).
+- Ask for a Personal Access Token (walk me through creating one at Settings then Developer settings then Personal access tokens then Fine-grained tokens, scoped to just this repo with Contents read/write).
+- Initialize a git repo in the folder, create a README and .gitignore, add the logo and index.html, commit on main.
+- Set the remote URL with the token embedded so future pushes work silently: https://USERNAME:TOKEN@github.com/USERNAME/REPO.git
+- Push main to origin.
+- Tell me how to enable GitHub Pages (Settings then Pages then Deploy from branch then main then root) and give me the expected URL: https://USERNAME.github.io/REPO/
+
+Step 5: Teach me how to update it going forward. Tell me that when a new sale comes in, I just tell you the details (amount, what was sold, any relevant notes) and you will edit the weekly items array, recompute totals, commit, and push. Tell me new earnings should always be itemized under their week, not collapsed into a single summary string.
+
+Do not skip Step 1. Do not assume defaults for anything I have not told you. Ask, build, show, then deploy.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Tips after it's built</h3>
+    <p>When a new sale comes in, tell Claude the <strong>amount, date, what it was, and any context</strong> (e.g. "got $135 today, mid-tier hosting commission, client used a coupon that reduced my cut"). Claude drops it as a line item under the current week, updates totals, and pushes live if you're connected to GitHub.</p>
+    <p>If the logo looks cropped weird inside the circle, ask Claude to adjust <code>object-fit</code> on <code>.logo-circle img</code>. Try <code>contain</code> instead of <code>cover</code>, or add a little padding.</p>
+    <p>To change colors, fonts, or add sections later, just describe what you want. The file is set up to be edited conversationally.</p>
+  </div>
+
+  <footer>
+    Built by <a href="https://x.com/LJM_Framer" target="_blank" rel="noopener">@LJM_Framer</a> · <a href="index.html">See the live example dashboard</a>
+  </footer>
+</div>
+
+<script>
+const copyBtn = document.getElementById("copyBtn");
+const promptText = document.getElementById("promptText");
+copyBtn.addEventListener("click", async () => {
+  const text = promptText.innerText;
+  try {
+    await navigator.clipboard.writeText(text);
+    copyBtn.textContent = "Copied!";
+    copyBtn.classList.add("copied");
+    setTimeout(() => {
+      copyBtn.textContent = "Copy";
+      copyBtn.classList.remove("copied");
+    }, 2000);
+  } catch (err) {
+    const range = document.createRange();
+    range.selectNode(promptText);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();
+    copyBtn.textContent = "Copied!";
+    copyBtn.classList.add("copied");
+    setTimeout(() => {
+      copyBtn.textContent = "Copy";
+      copyBtn.classList.remove("copied");
+    }, 2000);
+  }
+});
+</script>
+</body>
+</html>

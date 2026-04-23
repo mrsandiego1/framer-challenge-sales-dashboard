@@ -10,10 +10,17 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Inter, system-ui, sans-serif; background: #f7f7f5; color: #111; padding: 28px 32px 56px; line-height: 1.45; }
   .wrap { max-width: 1200px; margin: 0 auto; }
-  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e0; margin-bottom: 28px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e5e0; margin-bottom: 28px; }
+  .title-block { display: flex; align-items: center; gap: 16px; }
   .title-block h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
   .title-block .sub { color: #666; font-size: 14px; margin-top: 4px; }
-  .title-block .palm { font-size: 22px; margin-right: 6px; }
+  .logo-link { display: inline-flex; text-decoration: none; flex-shrink: 0; transition: transform 0.15s ease; }
+  .logo-link:hover { transform: scale(1.05); }
+  .logo-circle { width: 64px; height: 64px; border-radius: 50%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .logo-circle svg { width: 44px; height: 44px; }
+  .twitter-badge { display: inline-flex; align-items: center; gap: 6px; background: #0a0a0a; color: #fff; padding: 4px 10px 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; text-decoration: none; margin-top: 8px; transition: background 0.15s ease; letter-spacing: 0.01em; }
+  .twitter-badge:hover { background: #1d9bf0; }
+  .twitter-badge svg { width: 12px; height: 12px; }
   .status-pill { background: #111; color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
   .stat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 28px; }
   .stat { background: #fff; border: 1px solid #e9e9e4; border-radius: 14px; padding: 16px 18px; }
@@ -94,8 +101,40 @@
 <div class="wrap">
   <header>
     <div class="title-block">
-      <h1><span class="palm">🌴</span>La Jolla Marketing</h1>
-      <div class="sub">Framer Challenge · $25,000 goal · April 6 to July 5, 2026</div>
+      <a href="https://x.com/LJM_Framer" target="_blank" rel="noopener" class="logo-link" aria-label="La Jolla Marketing on X">
+        <div class="logo-circle">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g fill="#fff" stroke="none">
+              <path d="M43 32 Q42 62 38 100 L41 100 Q46 62 47 32 Z"/>
+              <path d="M44 31 Q30 17 14 21 Q22 15 8 14 Q20 19 28 22 Q39 28 44 31 Z"/>
+              <path d="M44 30 Q42 12 46 1 Q48 6 50 2 Q48 12 47 22 Q46 28 44 30 Z"/>
+              <path d="M45 30 Q56 17 72 19 Q63 14 80 12 Q66 18 58 23 Q49 28 45 30 Z"/>
+              <path d="M43 31 Q26 34 12 44 Q24 30 6 38 Q22 34 32 32 Q40 31 43 31 Z"/>
+              <path d="M46 31 Q60 34 72 41 Q63 30 80 36 Q66 32 56 31 Q48 30 46 31 Z"/>
+              <path d="M61 50 Q60 72 56 100 L60 100 Q64 72 64 50 Z"/>
+              <path d="M62 49 Q52 37 40 40 Q48 34 36 32 Q50 38 56 43 Q60 47 62 49 Z"/>
+              <path d="M62 48 Q60 32 64 22 Q66 27 68 24 Q65 34 64 42 Q63 47 62 48 Z"/>
+              <path d="M62 49 Q72 37 84 40 Q76 34 88 32 Q74 38 68 43 Q64 47 62 49 Z"/>
+              <path d="M61 50 Q48 53 38 60 Q48 49 34 56 Q48 51 56 50 Q60 49 61 50 Z"/>
+              <path d="M79 33 Q81 63 85 100 L88 100 Q83 63 82 33 Z"/>
+              <path d="M81 32 Q68 18 52 22 Q62 15 46 14 Q58 19 66 22 Q77 28 81 32 Z"/>
+              <path d="M82 31 Q80 12 84 1 Q86 6 88 2 Q86 12 85 22 Q84 28 82 31 Z"/>
+              <path d="M82 31 Q94 17 110 20 Q102 14 118 13 Q104 19 96 23 Q86 28 82 31 Z"/>
+              <path d="M80 32 Q64 35 52 42 Q63 30 46 37 Q62 34 72 33 Q78 32 80 32 Z"/>
+              <path d="M83 32 Q98 35 112 45 Q102 30 118 38 Q102 34 92 32 Q85 31 83 32 Z"/>
+              <path d="M4 104 Q18 94 32 102 Q44 108 52 98 Q44 112 32 107 Q18 100 4 108 Z"/>
+            </g>
+          </svg>
+        </div>
+      </a>
+      <div>
+        <h1>La Jolla Marketing</h1>
+        <div class="sub">Framer Challenge · $25,000 goal · April 6 to July 5, 2026</div>
+        <a href="https://x.com/LJM_Framer" target="_blank" rel="noopener" class="twitter-badge" aria-label="Follow @LJM_Framer on X">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @LJM_Framer
+        </a>
+      </div>
     </div>
     <div class="status-pill" id="statusPill">WEEK 3 · IN PROGRESS</div>
   </header>
